@@ -3,6 +3,7 @@ import json
 from bs4 import BeautifulSoup
 from multiprocessing.pool import ThreadPool
 from workflow import Workflow3, web
+from workflow.notify import notify
 
 
 def parse(item):
@@ -42,8 +43,9 @@ def main(wf):
         # Update download history
         history = wf.stored_data('downloaded') or set()
         wf.store_data('downloaded', history & {post['key'] for post in posts})
-        # Write log
+        # Write log and send notification
         wf.logger.debug('{} Mikan posts cached'.format(len(posts)))
+        notify('Cache Update Finished', '{} Mikan posts cached'.format(len(posts)))
     else:
         wf.logger.error('No Mikan token saved')
 
