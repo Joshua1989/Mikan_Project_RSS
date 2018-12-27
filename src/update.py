@@ -38,8 +38,9 @@ def main(wf):
     settings = json.loads(open('mikan_settings.json', 'r').read())
     token = settings.get('mikan_token', '')
     if token:
+        wf.logger.debug('wf.args = {}'.format(wf.args))
         # Get posts from RSS
-        posts = wf.cached_data('posts', lambda: update_RSS(token), max_age=1 if wf.args[0] == 'force' else 1200)
+        posts = wf.cached_data('posts', lambda: update_RSS(token), max_age=1 if wf.args and wf.args[0] == 'force' else 1200)
         # Update download history
         history = wf.stored_data('downloaded') or set()
         wf.store_data('downloaded', history & {post['key'] for post in posts})
